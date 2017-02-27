@@ -35,7 +35,7 @@ app.get("/webhook", (req, res) => {
     }
 });
 
-//Chatbot
+//Chatbot receiving message process root
 app.post('/webhook', (req, res) => {
     let data = req.body;
 
@@ -43,12 +43,12 @@ app.post('/webhook', (req, res) => {
     if (data.object === 'page') {
 
         // Iterate over each entry - there may be multiple if batched
-        data.entry.forEach(function(entry) {
+        data.entry.forEach((entry) => {
             let pageID = entry.id;
             let timeOfEvent = entry.time;
 
             // Iterate over each messaging event
-            entry.messaging.forEach(function(event) {
+            entry.messaging.forEach((event) => {
                 if (event.message) {
                     receivedMessage(event);
                 } else {
