@@ -14,6 +14,7 @@
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const request = require("request");
 const app = express();
 
 app.use(bodyParser.json());
@@ -67,8 +68,73 @@ app.post('/webhook', (req, res) => {
 });
 
 function receivedMessage(event) {
-    // Putting a stub for now, we'll expand it in the following steps
-    console.log("Message data: ", event.message);
+    let senderID = event.sender.id;
+    let recipientID = event.recipient.id;
+    let timeOfMessage = event.timestamp;
+    let message = event.message;
+
+    console.log("Received message for user %d and page %d at %d with message:", senderID, recipientID, timeOfMessage);
+    console.log(JSON.stringify(message));
+
+    let messageId = message.mid;
+
+    let messageText = message.text;
+    let messageAttachments = message.attachments;
+
+    if (messageText) {
+
+        // If we receive a text message, check to see if it matches a keyword
+        // and send back the example. Otherwise, just echo the text we received.
+        switch (messageText) {
+            case 'generic':
+                sendGenericMessage(senderID);
+                break;
+
+            default:
+                sendTextMessage(senderID, messageText);
+        }
+    } else if (messageAttachments) {
+        sendTextMessage(senderID, "Message with attachment received");
+    }
+}
+
+function sendGenericMessage(recipientId, messageText) {
+    // To be expanded in later sections
+}
+
+function sendTextMessage(recipientId, messageText) {
+    let messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: messageText
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+function callSendAPI(messageData) {
+    request({
+        uri: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: { access_token: "EAAIRQ1W31woBABodX5SQVOmM3m6fAUrZC3E2XUZBYU8ZCCFI3l2tWcH3mMD2P2I4zyIPVA5Cw2ALNiZCKmEQKF0Q1HzPfyELqxx2D91IpmsD29AWIR3ai2iUnfz4ZCIRJuc72U86cNHGWY8Yhd1YccjUFx9UfUoZB2VZAMSCCzG3wZDZD" },
+        method: 'POST',
+        json: messageData
+
+    }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            let recipientId = body.recipient_id;
+            let messageId = body.message_id;
+
+            console.log("Successfully sent generic message with id %s to recipient %s",
+                messageId, recipientId);
+        } else {
+            console.error("Unable to send message.");
+            console.error(response);
+            console.error(error);
+        }
+    });
 }
 
 //Start the server
