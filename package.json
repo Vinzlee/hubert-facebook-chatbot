@@ -1,0 +1,24 @@
+{
+  "name": "classrooms-messenger-chatbot",
+  "version": "1.0.0",
+  "description": "This is a first tutorial of Facebook Messenger Chatbot",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Vinzlee/classrooms/tree/master/Facebook/tuto2"
+  },
+  "keywords": [
+    "facebook",
+    "messenger",
+    "chatbot"
+  ],
+  "author": "Vincent Chollet <vinz.chollet@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
